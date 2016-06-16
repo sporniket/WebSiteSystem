@@ -11,7 +11,7 @@ A collection of tools (code generation, etc) for developping a PHP website to be
 
 E.g., in a project ant build file, one can see :
 
-```
+```xml
 <ant dir="${path.code.generator.srcDatabaseTable}" target="generateFiles" inheritAll="false">
 	<property name="param.dir.generator" value="php5"/>
 	<property name="param.dir.database" value="mysql4"/>
