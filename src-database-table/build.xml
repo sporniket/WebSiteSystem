@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!-- 
+	Look for "TODO:" occurences to find out what must be
+	configured to fit your environnement.
+-->
+<!--
+(c)2006 - 2008 David Sporn
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public
+License version 3 as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-->
+<project name="DatabaseTable" basedir="." default="default">
+	<property name="dir.com.sporniket.mdd.src.database.table" value="${basedir}" />
+
+	<!-- Load configuration -->
+	<property file="${dir.com.sporniket.mdd.src.database.table}/database-table.properties"/>
+	
+	<!-- 
+		 param.dir.generator 
+		 	= name of the target programming language
+		 param.dir.build.redist 
+		 	= path where redistributables files must be copied
+	-->
+	<target name="exportRedistributables" description="Copy mandatory files so that generated sources works">
+		<mkdir dir="${param.dir.build.redist}"/>
+		<copy todir="${param.dir.build.redist}">
+			<fileset dir="${dir.com.sporniket.mdd.src.database.table.redist}/${param.dir.generator}/${param.dir.generator.database}"/>
+		</copy>
+	</target>
+	
+	<!-- 
+		 param.dir.generator 
+		 	= name of the target programming language
+		 param.dir.database 
+		 	= name of the target database
+		 param.dir.build.generated
+		 	= path where source files must be generated
+		 param.dir.userfiles
+		 	= path to the model files
+		 param.output.file.extension
+		 	= extension to add to the generated files
+	-->
+	<target name="generateFiles" description="Transform an XML model to a specified language source.">
+		<property 
+			name="generator.xsl" 
+			value="${dir.com.sporniket.mdd.src.database.table.generator}/${param.dir.generator}/${param.dir.database}/table.xsl" 
+		/>
+		<mkdir dir="${param.dir.build.generated}"/>
+		<xslt destdir="${param.dir.build.generated}" 
+			basedir="${param.dir.userfiles}" 
+			extension="${param.output.file.extension}" 
+			style="${generator.xsl}"
+			includes="*.table"
+			>
+			<param name="output.dir" expression="${param.dir.build.generated}"/>
+			<fileset dir="${param.dir.userfiles}">
+				<include name="*.table"/>
+				<exclude name="*.xml"/>
+			</fileset>
+
+		</xslt>
+	</target>
+
+	<!-- 
+		 param.dir.build.generated
+		 	= path where models files must be generated
+		 param.dir.userfiles
+		 	= path to the model files
+	-->
+	<target name="exportFiles" description="Transform an XML model into related src-form models">
+		<mkdir dir="${param.dir.build.generated}"/>
+		<xslt destdir="${param.dir.build.generated}" 
+			basedir="${param.dir.userfiles}" 
+			extension="${dir.com.sporniket.mdd.src.database.table.exporter.form.extension}" 
+			style="${dir.com.sporniket.mdd.src.database.table.exporter.form.style}"
+			includes="*.table"
+			>
+			<param name="output.dir" expression="${param.dir.build.generated}"/>
+			<fileset dir="${param.dir.userfiles}">
+				<include name="*.table"/>
+				<exclude name="*.xml"/>
+			</fileset>
+
+		</xslt>
+		<xslt destdir="${param.dir.build.generated}" 
+			basedir="${param.dir.userfiles}" 
+			extension="${dir.com.sporniket.mdd.src.database.table.exporter.filter.extension}" 
+			style="${dir.com.sporniket.mdd.src.database.table.exporter.filter.style}"
+			includes="*.table"
+			>
+			<param name="output.dir" expression="${param.dir.build.generated}"/>
+			<fileset dir="${param.dir.userfiles}">
+				<include name="*.table"/>
+				<exclude name="*.xml"/>
+			</fileset>
+
+		</xslt>
+	</target>
+	
+	<target name="default">
+		<echo>Look for "TODO:" occurences in build.xml to find out what must be
+configured to fit your environnement.
+
+#### Task usages ####
+
+== exportRedistributables ==
+Copy mandatory files so that generated sources works.
+
+ param.dir.generator 
+    = name of the target programming language
+ param.dir.build.redist 
+    = path where redistributables files must be copied
+
+== generateFiles ==
+Transform an XML model to a specified language source.
+
+ param.dir.generator 
+    = name of the target programming language
+ param.dir.build.generated
+    = path where source files must be generated
+ param.dir.userfiles
+    = path to the model files
+ param.output.file.extension
+    = extension to add to the generated files
+
+== exportFiles ==
+Transform an XML model to a specified language source.
+
+ param.dir.build.generated
+    = path where models files must be generated
+ param.dir.userfiles
+    = path to the model files
+</echo>
+	</target>
+	
+	
+</project>
