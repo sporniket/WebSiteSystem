@@ -398,6 +398,12 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 
 
+	<xsl:template match="model/property" mode="fillRow">
+		<xsl:variable name="ref_name" select="@name"/>
+		<xsl:variable name="col_name" select="@column"/>
+		<![CDATA[
+			$new_row->set]]><xsl:value-of select="@name"/><![CDATA[(($next_record[$this->myModel[']]><xsl:value-of select="$col_name"/><![CDATA[']])) ;]]></xsl:template>
+
 
 
 	<xsl:template match="enum" mode="DeclareValues">
