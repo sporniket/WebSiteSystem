@@ -97,6 +97,7 @@ class DatabaseTable
 			$sqlVal .= $valueList[$key] ;
 		}
 		$sql = '('.$sqlCol.') VALUES('.$sqlVal.')' ;
+		return $sql ;
 	}
 	
 	/**Build a UPDATE query.
@@ -136,6 +137,7 @@ class DatabaseTable
 			$sql .= $value.' = '.$valueList[$key] ;
 		}
 		$sql = ' SET '.$sql.' ' ;
+		return $sql ;
 	}
 	
 	/**Build a DELETE query.
