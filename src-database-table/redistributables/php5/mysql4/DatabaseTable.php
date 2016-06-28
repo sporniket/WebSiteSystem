@@ -314,7 +314,6 @@ class DatabaseTable
 	 *@return a sql query part as a string (empty if operator and type are incorrects)
 	 */
 	//TODO: deals date type values
-	//TODO: externalize value conversion
 	function buildCondition($colName,$colValue,$operator='eq',$colType='string')
 	{
 		$encodedValue = encodeValue($colValue, $colType) ;
@@ -328,6 +327,7 @@ class DatabaseTable
 	 *@param type type of the value (string,number,datetime).
 	 *@return a sql query part as a string (empty if operator and type are incorrects)
 	 */	
+	//TODO: use proper sanitization function for text values
 	function encodeValue($value, $type)
 	{
 		$encodedValue = '' ;
@@ -440,5 +440,27 @@ class DatabaseTable
 		}
 	}
 	
+	
+	/**Build a LIMIT clause.
+	 *@param count limit value.
+	 *@param offset offset value.
+	 *@return a <code>LIMIT $count [OFFSET $offset]</code> expression if appliable.
+	 */
+	function buildExpression($count=0,$offset=0)
+	{
+		//force integer values
+		$intcount = (integer)$count ;
+		$intoffset = (integer)$offset ;
+
+		$sql = '' ;
+		if ($intcount > 0)
+		{
+			$sqlLimit = ' LIMIT '.$intcount.' ' ;
+			$sqlOffset = ($intoffset > 0)?'OFFSET '.$intoffset.' ':'' ;
+			$sql=$sqlLimit.$sqlOffset ;
+		}
+		
+		return $sql ;
+	}
 }
 ?>
