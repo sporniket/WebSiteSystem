@@ -164,9 +164,11 @@ class DatabaseTable
 	 *@param whereOperator the logical operator to relate all the where conditions ('AND', 'OR').
 	 *@param orderList array of column order names (column_name [asc|desc]).
 	 *@param groupList array of column group names (function(column_name) [asc|desc]).
+	 *@param limitCount max number of returned rows (0 = no limit).
+	 *@param limitOffset number of rows to skip when limiting the number of returned rows.
 	 *@return a sql query as a string
 	 */
-	function buildSqlSelect ($tableName, $columnList, $whereList, $whereOperator, $orderList, $groupList)
+	function buildSqlSelect ($tableName, $columnList, $whereList, $whereOperator, $orderList, $groupList,$limitCount,$limitOffset)
 	{
 		$sql = 'SELECT ';
 		foreach ($columnList as $key=>$value)
@@ -181,6 +183,7 @@ class DatabaseTable
 		$sql .= (0 < count($orderList))?' WHERE ':'' ;
 		$sql .= DatabaseTable::buildConditionGroupClause($whereList, $whereOperator) ;
 		$sql .= DatabaseTable::buildOrderByClause($orderList) ;
+		$sql .= DatabaseTable::buildLimit($limitCount,$limitOffset) ;
 		$sql .= DatabaseTable::buildGroupByClause($groupList) ;
 		return $sql ;
 	}
@@ -448,7 +451,7 @@ class DatabaseTable
 	 *@param offset offset value.
 	 *@return a <code>LIMIT $count [OFFSET $offset]</code> expression if appliable.
 	 */
-	function buildExpression($count=0,$offset=0)
+	function buildLimit($count=0,$offset=0)
 	{
 		//force integer values
 		$intcount = (integer)$count ;
