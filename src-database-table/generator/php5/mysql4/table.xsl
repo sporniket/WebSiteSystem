@@ -487,6 +487,9 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			$]]><xsl:value-of select="concat($variable_name, '[] = $this->myModel[&quot;', @name, '&quot;].&quot; ', @order,'&quot; ;')"/><![CDATA[
 ]]></xsl:for-each></xsl:template>
 
+	<xsl:template match="limit" mode="buildLimitParameter">
+		<xsl:param name="filter_name"/>//FIXME compute limit, either from filter or by default ; if there is a limit, compute the offset from filter (or by default ?)</xsl:template>
+
 
 
 
@@ -530,7 +533,12 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:with-param name="variable_name" select="'orderList'"/>
 		</xsl:apply-templates><![CDATA[
 
-			$sql = buildSqlSelect($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList) ;
+			$limitCount = 0 ;
+			$limitOffset = 0 ;]]><xsl:apply-templates select="limit" mode="buildLimitParameters">
+			<xsl:with-param name="filter_name" select="'$filter_name'"/>
+		</xsl:apply-templates><![CDATA[
+
+			$sql = buildSqlSelect($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList, $limitCount, $limitOffset) ;
 		}
 ]]></xsl:for-each></xsl:template>
 
