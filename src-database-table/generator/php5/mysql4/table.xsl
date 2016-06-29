@@ -533,7 +533,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:with-param name="variable_name" select="'orderList'"/>
 		</xsl:apply-templates><![CDATA[
 
-			$limitCount = 0 ;
+			<!-- FIXME count the number of 'limit' nodes, if 0, declare the var with 0, otherwise apply the template -->$limitCount = 0 ;
 			$limitOffset = 0 ;]]><xsl:apply-templates select="limit" mode="buildLimitParameters">
 			<xsl:with-param name="filter_name" select="'$filter_name'"/>
 		</xsl:apply-templates><![CDATA[
