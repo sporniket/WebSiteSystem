@@ -488,7 +488,10 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 ]]></xsl:for-each></xsl:template>
 
 	<xsl:template match="limit" mode="buildLimitParameter">
-		<xsl:param name="filter_name"/>//FIXME compute limit, either from filter or by default ; if there is a limit, compute the offset from filter (or by default ?)</xsl:template>
+		<xsl:param name="filter_name"/><![CDATA[
+			]]><xsl:value-of select="concat('$limitCount=',$filter_name,'.get',limit/@filterName,'() ;')"/>
+		<xsl:value-of select="concat('$limitOffset=',$filter_name,'.get',offset/@filterName,'() ;')"/><![CDATA[
+]]></xsl:template>
 
 
 
