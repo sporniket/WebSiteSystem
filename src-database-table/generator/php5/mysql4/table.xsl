@@ -487,9 +487,9 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			$]]><xsl:value-of select="concat($variable_name, '[] = $this->myModel[&quot;', @name, '&quot;].&quot; ', @order,'&quot; ;')"/><![CDATA[
 ]]></xsl:for-each></xsl:template>
 
-	<xsl:template match="limit" mode="buildLimitParameter">
+	<xsl:template match="limit" mode="buildLimitParameters">
 		<xsl:param name="filter_name"/><![CDATA[
-			]]><xsl:value-of select="concat('$limitCount=',$filter_name,'.get',limit/@filterName,'() ;')"/>
+			]]><xsl:value-of select="concat('$limitCount=',$filter_name,'.get',count/@filterName,'() ;')"/>
 		<xsl:value-of select="concat('$limitOffset=',$filter_name,'.get',offset/@filterName,'() ;')"/><![CDATA[
 ]]></xsl:template>
 
@@ -523,7 +523,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 			$whereList = array() ; ]]><xsl:apply-templates select="where" mode="buildWhereConditions">
 			<xsl:with-param name="variable_name" select="'whereList'"/>
-			<xsl:with-param name="filter_name" select="'$filter_name'"/>
+			<xsl:with-param name="filter_name" select="$filter_name"/>
 		</xsl:apply-templates><![CDATA[
 
 			$whereOperator = ']]><xsl:value-of select="where/@operator"/><![CDATA[';
@@ -534,12 +534,19 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 			$groupList = array() ;]]><xsl:apply-templates select="groupby" mode="buildGroupByList">
 			<xsl:with-param name="variable_name" select="'orderList'"/>
-		</xsl:apply-templates><![CDATA[
+		</xsl:apply-templates>
 
-			<!-- FIXME count the number of 'limit' nodes, if 0, declare the var with 0, otherwise apply the template -->$limitCount = 0 ;
-			$limitOffset = 0 ;]]><xsl:apply-templates select="limit" mode="buildLimitParameters">
-			<xsl:with-param name="filter_name" select="'$filter_name'"/>
-		</xsl:apply-templates><![CDATA[
+		<xsl:choose>
+			<xsl:when test="count(limit)=1">
+				<xsl:apply-templates select="limit" mode="buildLimitParameters">
+					<xsl:with-param name="filter_name" select="$filter_name"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise><![CDATA[
+
+			$limitCount = 0 ;
+			$limitOffset = 0 ;]]></xsl:otherwise>
+		</xsl:choose><![CDATA[
 
 			$sql = buildSqlSelect($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList, $limitCount, $limitOffset) ;
 		}
@@ -650,6 +657,6 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:when test="@columnName=$model_sid"><xsl:value-of select="$model/@sidType"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="$model/property[@column=$column_name]/@type"/></xsl:otherwise>
 		</xsl:choose></xsl:variable><![CDATA[
-			$]]><xsl:value-of select="concat($variable_name,'[] = buildCondition($this->myModel[&quot;', @columnName, '&quot;], ',$filter_name,'.get',@filterName,', &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
+			$]]><xsl:value-of select="concat($variable_name,'[] = buildCondition($this->myModel[&quot;', @columnName, '&quot;], ',$filter_name,'.get',@filterName,'(), &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
 ]]></xsl:template>
 </xsl:stylesheet>
