@@ -143,6 +143,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		$this->myModel = array() ;
 		$this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['] = $modelNameSpace.']]><xsl:value-of select="model/@sidColumn"/><![CDATA[';
 		]]><xsl:apply-templates select="model/property" mode="InitModel"/><![CDATA[
+		$this->myDefaultFilter = new Db]]><xsl:value-of select="@classname"/><![CDATA[Filter() ;
 	}
 	
 	//========================================
@@ -161,31 +162,11 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			return array() ;
 		}
 		$list_retour = array() ;
-		//TODO : Build the sql request using the optionnal filter
+
 		$sql = '' ;
 		if (null == $filter) //default selector
 		{
-			$columnList = array() ;
-			$columnList[] = $this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['] ;]]><xsl:apply-templates select="sql/selectors/defaultselector/columns" mode="buildColumnList">
-			<xsl:with-param name="variable_name" select="'columnList'"/>
-		</xsl:apply-templates><![CDATA[
-
-			$whereList = array() ; ]]><xsl:apply-templates select="sql/selectors/defaultselector/where" mode="buildWhereConditions">
-			<xsl:with-param name="variable_name" select="'whereList'"/>
-			<xsl:with-param name="filter_name" select="'$filter_name'"/>
-		</xsl:apply-templates><![CDATA[
-		
-			$whereOperator = ']]><xsl:value-of select="sql/selectors/defaultselector/where/@operator"/><![CDATA[';
-
-			$orderList = array() ;]]><xsl:apply-templates select="sql/selectors/defaultselector/orderby" mode="buildOrderByList">
-			<xsl:with-param name="variable_name" select="'orderList'"/>
-		</xsl:apply-templates><![CDATA[
-
-			$groupList = array() ;]]><xsl:apply-templates select="sql/selectors/defaultselector/groupby" mode="buildGroupByList">
-			<xsl:with-param name="variable_name" select="'orderList'"/>
-		</xsl:apply-templates><![CDATA[
-
-			$sql = buildSqlSelect ($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList)
+			return getList($this->myDefaultFilter, $rangeStart, $rangeLength) ;
 		}
 		]]><xsl:apply-templates select="sql/selectors" mode="buildSelectors">
 			<xsl:with-param name="filter_name" select="'filter'"/>
@@ -343,6 +324,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 	//Fields
 	var $myTable ;
 	var $myModel ;
+	var $myDefaultFilter ;
 	
 ]]>
 	</xsl:template>
