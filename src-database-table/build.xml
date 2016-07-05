@@ -28,13 +28,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	<!-- 
 		 param.dir.generator 
 		 	= name of the target programming language
+		 param.dir.database 
+		 	= name of the target database
 		 param.dir.build.redist 
 		 	= path where redistributables files must be copied
 	-->
 	<target name="exportRedistributables" description="Copy mandatory files so that generated sources works">
 		<mkdir dir="${param.dir.build.redist}"/>
 		<copy todir="${param.dir.build.redist}">
-			<fileset dir="${dir.com.sporniket.mdd.src.database.table.redist}/${param.dir.generator}/${param.dir.generator.database}"/>
+			<fileset dir="${dir.com.sporniket.mdd.src.database.table.redist}/${param.dir.generator}/${param.dir.database}"/>
 		</copy>
 	</target>
 	
