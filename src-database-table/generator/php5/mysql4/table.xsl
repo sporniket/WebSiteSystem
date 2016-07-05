@@ -164,7 +164,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		$list_retour = array() ;
 
 		$sql = '' ;
-		if (null == $filter) //default selector
+		if (is_null($filter)) //default selector
 		{
 			return getList($this->myDefaultFilter, $rangeStart, $rangeLength) ;
 		}
@@ -278,7 +278,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		//TODO : Build the sql request using either a filter, either a row
 		$sql = null ;
 		
-		if (null == $filter)
+		if (is_null($filter))
 		{
 			return -1 ;
 		}
@@ -303,7 +303,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 	{
 		$sql = null ;
 		
-		if (null != $filter)
+		if (is_null($filter))
 		{
 			//build the sql request with a row
 			//$sql = 'delete from '.$this->myTable.' where '.$this->myModel['sid'].' = '.(integer)$filter->getSid() ;
