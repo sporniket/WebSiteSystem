@@ -589,7 +589,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:when test="@operator = 'lt'"><xsl:value-of select="' &lt; '"/></xsl:when>
 			<xsl:when test="@operator = 'ge'"><xsl:value-of select="' >= '"/></xsl:when>
 			<xsl:when test="@operator = 'le'"><xsl:value-of select="' &lt;= '"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="' = '"/></xsl:otherwise>
+			<xsl:otherwise><xsl:value-of select="' == '"/></xsl:otherwise>
 		</xsl:choose></xsl:variable><![CDATA[(]]><xsl:choose>
 			<xsl:when test="@enum = 'true'"><xsl:value-of select="concat('$', $variable_name,'->get',@name,'()',$operator,'Db',@name,'Filter::',@name,'_',@value)"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="concat('$', $variable_name,'->get',@name,'()',$operator,@value)"/></xsl:otherwise>
