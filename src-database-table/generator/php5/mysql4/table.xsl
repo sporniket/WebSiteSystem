@@ -550,7 +550,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		{
 			$whereList = array() ; ]]><xsl:apply-templates select="where" mode="buildWhereConditions">
 			<xsl:with-param name="variable_name" select="'whereList'"/>
-			<xsl:with-param name="filter_name" select="'$filter_name'"/>
+			<xsl:with-param name="filter_name" select="$filter_name"/>
 		</xsl:apply-templates><![CDATA[
 
 			$whereOperator = ']]><xsl:value-of select="where/@operator"/><![CDATA[';
@@ -564,6 +564,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 
 	<xsl:template match="conditionGroup" mode="buildIfConditions">
+		<xsl:param name="filter_name"/>
 		<xsl:param name="variable_name"/>
 		<xsl:variable name="operator"><xsl:choose>
 			<xsl:when test="@operator = 'and'"><xsl:value-of select="' &amp;&amp; '"/></xsl:when>
@@ -572,6 +573,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		</xsl:choose></xsl:variable><![CDATA[(]]><xsl:for-each select="conditionGroup|condition">
 			<xsl:if test="position()>1"><xsl:value-of select="$operator"/></xsl:if>
 			<xsl:apply-templates select="." mode="buildIfConditions">
+				<xsl:with-param name="filter_name" select="$filter_name"/>
 				<xsl:with-param name="variable_name" select="$variable_name"/>
 			</xsl:apply-templates>
 		</xsl:for-each><![CDATA[)]]></xsl:template>
@@ -581,6 +583,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 
 	<xsl:template match="condition" mode="buildIfConditions">
+		<xsl:param name="filter_name"/>
 		<xsl:param name="variable_name"/>
 		<xsl:variable name="operator"><xsl:choose>
 			<xsl:when test="@operator = 'eq'"><xsl:value-of select="' == '"/></xsl:when>
@@ -591,8 +594,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:when test="@operator = 'le'"><xsl:value-of select="' &lt;= '"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="' == '"/></xsl:otherwise>
 		</xsl:choose></xsl:variable><![CDATA[(]]><xsl:choose>
-			<xsl:when test="@enum = 'true'"><xsl:value-of select="concat('$', $variable_name,'->get',@name,'()',$operator,'Db',@name,'Filter::',@name,'_',@value)"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="concat('$', $variable_name,'->get',@name,'()',$operator,@value)"/></xsl:otherwise>
+			<xsl:when test="@enum = 'true'"><xsl:value-of select="concat('$', $filter_name,'->get',@name,'()',$operator,'Db',@name,'Filter::',@name,'_',@value)"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="concat('$', $filter_name,'->get',@name,'()',$operator,@value)"/></xsl:otherwise>
 		</xsl:choose><![CDATA[)]]></xsl:template>
 
 
