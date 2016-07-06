@@ -29,30 +29,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 class DatabaseTable
 {
 	//constants
-	var $PATTERN_DATETIME = '/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/' ;
+	const PATTERN_DATETIME = '/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/' ;
 	
-	var $OPERATOR_EQUAL = 'eq' ;
-	var $OPERATOR_NOT_EQUAL = 'neq' ;
-	var $OPERATOR_GREATER_OR_EQUAL = 'ge' ;
-	var $OPERATOR_NOT_GREATER_OR_EQUAL = 'nge' ;
-	var $OPERATOR_LESSER_OR_EQUAL = 'le' ;
-	var $OPERATOR_NOT_LESSER_OR_EQUAL = 'nle' ;
-	var $OPERATOR_GREATER = 'gt' ;
-	var $OPERATOR_NOT_GREATER = 'ngt' ;
-	var $OPERATOR_LESSER = 'lt' ;
-	var $OPERATOR_NOT_LESSER = 'nlt' ;
-	var $OPERATOR_IN = 'in' ;
-	var $OPERATOR_NOT_IN = 'nin' ;
-	var $OPERATOR_LIKE = 'like' ;
-	var $OPERATOR_NOT_LIKE = 'nlike' ;
+	const OPERATOR_EQUAL = 'eq' ;
+	const OPERATOR_NOT_EQUAL = 'neq' ;
+	const OPERATOR_GREATER_OR_EQUAL = 'ge' ;
+	const OPERATOR_NOT_GREATER_OR_EQUAL = 'nge' ;
+	const OPERATOR_LESSER_OR_EQUAL = 'le' ;
+	const OPERATOR_NOT_LESSER_OR_EQUAL = 'nle' ;
+	const OPERATOR_GREATER = 'gt' ;
+	const OPERATOR_NOT_GREATER = 'ngt' ;
+	const OPERATOR_LESSER = 'lt' ;
+	const OPERATOR_NOT_LESSER = 'nlt' ;
+	const OPERATOR_IN = 'in' ;
+	const OPERATOR_NOT_IN = 'nin' ;
+	const OPERATOR_LIKE = 'like' ;
+	const OPERATOR_NOT_LIKE = 'nlike' ;
 	
-	var $TYPE_INTEGER = 'integer' ;
-	var $TYPE_UNSIGNED_INTEGER = 'unsignedInteger' ;
-	var $TYPE_CHAR = 'char' ;
-	var $TYPE_STRING = 'string' ;
-	var $TYPE_TEXT = 'text' ;
-	var $TYPE_DATETIME = 'datetime' ;
-	var $TYPE_DATE = 'date' ;
+	const TYPE_INTEGER = 'integer' ;
+	const TYPE_UNSIGNED_INTEGER = 'unsignedInteger' ;
+	const TYPE_CHAR = 'char' ;
+	const TYPE_STRING = 'string' ;
+	const TYPE_TEXT = 'text' ;
+	const TYPE_DATETIME = 'datetime' ;
+	const TYPE_DATE = 'date' ;
 	
 	//stores the table name
 	var $myTable ;
@@ -321,7 +321,7 @@ class DatabaseTable
 	//TODO: deals date type values
 	function buildCondition($colName,$colValue,$operator='eq',$colType='string')
 	{
-		$encodedValue = encodeValue($colValue, $colType) ;
+		$encodedValue = $this->encodeValue($colValue, $colType) ;
 		return DatabaseTable::buildExpression($colName, $encodedValue, $operator) ;
 	}
 
@@ -332,7 +332,6 @@ class DatabaseTable
 	 *@param type type of the value (string,number,datetime).
 	 *@return a sql query part as a string (empty if operator and type are incorrects)
 	 */	
-	//TODO: use proper sanitization function for text values
 	function encodeValue($value, $type)
 	{
 		$encodedValue = '' ;
@@ -346,15 +345,15 @@ class DatabaseTable
 		}
 		else if ($type == DatabaseTable::TYPE_STRING)
 		{
-			$encodedValue = '\''.addslashes($value).'\'' ;
+			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_CHAR)
 		{
-			$encodedValue = '\''.addslashes($value).'\'' ;
+			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_TEXT)
 		{
-			$encodedValue = '\''.addslashes($value).'\'' ;
+			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_DATETIME)
 		{
@@ -364,7 +363,7 @@ class DatabaseTable
 			}
 			else
 			{
-				$encodedValue = '\''.addslashes($value).'\'' ;
+				$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
 			}
 		}
 		return $encodedValue ;
@@ -467,5 +466,6 @@ class DatabaseTable
 		
 		return $sql ;
 	}
+	
 }
 ?>
