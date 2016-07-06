@@ -166,7 +166,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		$sql = '' ;
 		if (is_null($filter)) //default selector
 		{
-			return getList($this->myDefaultFilter, $rangeStart, $rangeLength) ;
+			return $this->getList($this->myDefaultFilter, $rangeStart, $rangeLength) ;
 		}
 		]]><xsl:apply-templates select="sql/selectors" mode="buildSelectors">
 			<xsl:with-param name="filter_name" select="'filter'"/>
