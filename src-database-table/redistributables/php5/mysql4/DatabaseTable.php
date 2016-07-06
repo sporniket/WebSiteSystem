@@ -247,7 +247,7 @@ class DatabaseTable
 	 */
 	function buildGroupByClause ($groupList)
 	{
-		if (count($orderList))
+		if (count($groupList))
 		{
 			$sql = ' GROUP BY ';
 			foreach ($groupList as $key=>$value)
@@ -274,7 +274,7 @@ class DatabaseTable
 	 */
 	function buildConditionGroupClause ($whereList, $whereOperator)
 	{
-		if (count($orderList))
+		if (count($whereList))
 		{
 			$sql = ' (';
 			foreach ($whereList as $key=>$value)
