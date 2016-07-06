@@ -48,7 +48,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Row
 
 /**Operations on the database table
  */
-class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
+class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTable
 {
 ]]><xsl:apply-templates select="." mode="Table"/><![CDATA[
 }
@@ -222,7 +222,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:with-param name="source_name" select="'row'"/>
 		</xsl:apply-templates><![CDATA[
 		
-		$sql = buildInsertQuery($this->myTable, $columnList, $valueList) ;
+		$sql = $this->buildInsertQuery($this->myTable, $columnList, $valueList) ;
 		mysql_query($sql);
 		return mysql_affected_rows() ;
 	}
@@ -246,9 +246,9 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 		</xsl:apply-templates><![CDATA[
 
 		$whereList = array() ;
-		$whereList[] = buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
+		$whereList[] = $this->buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
 		
-		$sql = buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
+		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
 		mysql_query($sql);
 		return mysql_affected_rows() ;
 	}
@@ -261,11 +261,11 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 	{
 		if (is_a($filter, 'Db]]><xsl:value-of select="@classname" /><![CDATA[Filter'))
 		{
-			return deleteUsingFilter($filter) ;
+			return $this->deleteUsingFilter($filter) ;
 		}
 		else if (is_a($filter, 'Db]]><xsl:value-of select="@classname" /><![CDATA[Row'))
 		{
-			return deleteUsingRow($filter) ;
+			return $this->deleteUsingRow($filter) ;
 		}
 		else
 		{
@@ -308,8 +308,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			//build the sql request with a row
 			//$sql = 'delete from '.$this->myTable.' where '.$this->myModel['sid'].' = '.(integer)$filter->getSid() ;
 			$whereList = array() ;
-			$whereList[] = buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
-			$sql = buildDeleteQuery($this->myTable, $whereList, 'and') ;
+			$whereList[] = $this->buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
+			$sql = $this->buildDeleteQuery($this->myTable, $whereList, 'and') ;
 		}
 		else
 		{
@@ -449,7 +449,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 	<xsl:template match="model" mode="buildValueList">
 		<xsl:param name="variable_name"/>
 		<xsl:param name="source_name"/><xsl:for-each select="property"><![CDATA[
-		$]]><xsl:value-of select="concat($variable_name, '[] = encodeValue($', $source_name,'->get', @name, '(), &quot;', @type,'&quot;) ;')"/><![CDATA[]]></xsl:for-each></xsl:template>
+		$]]><xsl:value-of select="concat($variable_name, '[] = $this->encodeValue($', $source_name,'->get', @name, '(), &quot;', @type,'&quot;) ;')"/><![CDATA[]]></xsl:for-each></xsl:template>
 
 
 
@@ -471,8 +471,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 	<xsl:template match="limit" mode="buildLimitParameters">
 		<xsl:param name="filter_name"/><![CDATA[
-			]]><xsl:value-of select="concat('$limitCount=',$filter_name,'.get',count/@filterName,'() ;')"/>
-		<xsl:value-of select="concat('$limitOffset=',$filter_name,'.get',offset/@filterName,'() ;')"/><![CDATA[
+			]]><xsl:value-of select="concat('$limitCount = $',$filter_name,'->get',count/@filterName,'() ;')"/>
+		<xsl:value-of select="concat('$limitOffset = $',$filter_name,'->get',offset/@filterName,'() ;')"/><![CDATA[
 ]]></xsl:template>
 
 
@@ -530,7 +530,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			$limitOffset = 0 ;]]></xsl:otherwise>
 		</xsl:choose><![CDATA[
 
-			$sql = buildSqlSelect($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList, $limitCount, $limitOffset) ;
+			$sql = $this->buildSqlSelect($this->myTable, $columnList, $whereList, $whereOperator, $orderList, $groupList, $limitCount, $limitOffset) ;
 		}
 ]]></xsl:for-each></xsl:template>
 
@@ -555,7 +555,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 			$whereOperator = ']]><xsl:value-of select="where/@operator"/><![CDATA[';
 
-			$sql = buildDeleteQuery($this->myTable, $whereList, $whereOperator) ;
+			$sql = $this->buildDeleteQuery($this->myTable, $whereList, $whereOperator) ;
 		}
 ]]></xsl:for-each></xsl:template>
 
@@ -617,7 +617,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 						<xsl:with-param name="variable_name" select="concat($variable_name,'_',position())"/>
 						<xsl:with-param name="filter_name" select="$filter_name"/>
 					</xsl:apply-templates><![CDATA[
-			$]]><xsl:value-of select="concat($variable_name,'[] = buildConditionGroupClause ($',$variable_name,'_',position(),', &quot;', @operator,'&quot;) ;')"/><![CDATA[
+			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildConditionGroupClause ($',$variable_name,'_',position(),', &quot;', @operator,'&quot;) ;')"/><![CDATA[
 ]]></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="." mode="buildWhereConditions">
@@ -642,6 +642,6 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 			<xsl:when test="@columnName=$model_sid"><xsl:value-of select="$model/@sidType"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="$model/property[@column=$column_name]/@type"/></xsl:otherwise>
 		</xsl:choose></xsl:variable><![CDATA[
-			$]]><xsl:value-of select="concat($variable_name,'[] = buildCondition($this->myModel[&quot;', @columnName, '&quot;], ',$filter_name,'.get',@filterName,'(), &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
+			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildCondition($this->myModel[&quot;', @columnName, '&quot;], $',$filter_name,'->get',@filterName,'(), &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
 ]]></xsl:template>
 </xsl:stylesheet>
