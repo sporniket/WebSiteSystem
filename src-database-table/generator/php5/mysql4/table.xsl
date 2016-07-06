@@ -398,7 +398,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table
 
 	<xsl:template match="item" mode="DeclareValues">
 		<xsl:param name="prefix"/><![CDATA[
-	var $]]><xsl:value-of select="$prefix"/><xsl:value-of select="@name"/><![CDATA[ = ]]><xsl:value-of select="@value"/><![CDATA[ ;]]></xsl:template>
+	const ]]><xsl:value-of select="$prefix"/><xsl:value-of select="@name"/><![CDATA[ = ]]><xsl:value-of select="@value"/><![CDATA[ ;]]></xsl:template>
 
 
 
