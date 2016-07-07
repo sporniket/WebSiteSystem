@@ -178,10 +178,10 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 
 		$this->myLastRequest = $sql ;
-		$db_result = mysql_query($sql) ;
+		$db_result = mysqli_query($sql) ;
 		$row_counter = 0 ;
 		
-		while ($next_record = @mysql_fetch_array($db_result))
+		while ($next_record = @mysqli_fetch_array($db_result))
 		{
 			if ($rangeStart >= 0 && $row_counter < $rangeStart)
 			{
@@ -226,8 +226,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$sql = $this->buildInsertQuery($this->myTable, $columnList, $valueList) ;
 
 		$this->myLastRequest = $sql ;
-		mysql_query($sql);
-		return mysql_affected_rows() ;
+		mysqli_query($sql);
+		return mysqli_affected_rows() ;
 	}
 	
 	/**Update a row from a Db]]><xsl:value-of select="@classname" /><![CDATA[Row.
@@ -254,8 +254,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
 
 		$this->myLastRequest = $sql ;
-		mysql_query($sql);
-		return mysql_affected_rows() ;
+		mysqli_query($sql);
+		return mysqli_affected_rows() ;
 	}
 	
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row) or a Db]]><xsl:value-of select="@classname" /><![CDATA[Filter.
@@ -297,8 +297,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 		
 		$this->myLastRequest = $sql ;
-		mysql_query($sql) ;
-		return mysql_affected_rows() ;
+		mysqli_query($sql) ;
+		return mysqli_affected_rows() ;
 	}
 
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row).
@@ -323,8 +323,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 		
 		$this->myLastRequest = $sql ;
-		mysql_query($sql) ;
-		return mysql_affected_rows() ;
+		mysqli_query($sql) ;
+		return mysqli_affected_rows() ;
 	}
 	
 	//========================================

@@ -345,15 +345,15 @@ class DatabaseTable
 		}
 		else if ($type == DatabaseTable::TYPE_STRING)
 		{
-			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_CHAR)
 		{
-			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_TEXT)
 		{
-			$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
 		}
 		else if ($type == DatabaseTable::TYPE_DATETIME)
 		{
@@ -363,7 +363,7 @@ class DatabaseTable
 			}
 			else
 			{
-				$encodedValue = '\''.mysql_real_escape_string($value).'\'' ;
+				$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
 			}
 		}
 		return $encodedValue ;
