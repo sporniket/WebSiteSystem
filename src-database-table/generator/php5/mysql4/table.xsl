@@ -177,6 +177,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 			return $list_retour ;
 		}
 
+		$this->myLastRequest = $sql ;
 		$db_result = mysql_query($sql) ;
 		$row_counter = 0 ;
 		
@@ -223,6 +224,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		</xsl:apply-templates><![CDATA[
 		
 		$sql = $this->buildInsertQuery($this->myTable, $columnList, $valueList) ;
+
+		$this->myLastRequest = $sql ;
 		mysql_query($sql);
 		return mysql_affected_rows() ;
 	}
@@ -249,6 +252,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$whereList[] = $this->buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
 		
 		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
+
+		$this->myLastRequest = $sql ;
 		mysql_query($sql);
 		return mysql_affected_rows() ;
 	}
@@ -291,6 +296,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 			return -1 ;
 		}
 		
+		$this->myLastRequest = $sql ;
 		mysql_query($sql) ;
 		return mysql_affected_rows() ;
 	}
@@ -316,6 +322,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 			return -1 ;
 		}
 		
+		$this->myLastRequest = $sql ;
 		mysql_query($sql) ;
 		return mysql_affected_rows() ;
 	}
@@ -325,6 +332,12 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	var $myTable ;
 	var $myModel ;
 	var $myDefaultFilter ;
+	var $myLastRequest ;
+
+	function getLastRequest()
+	{
+		return $this->myLastRequest ;
+	}
 	
 ]]>
 	</xsl:template>
