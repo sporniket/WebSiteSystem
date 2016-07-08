@@ -149,12 +149,13 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	//========================================
 	//Operations
 	/**Select rows from the table according to a filter.
+	 * @param datasource the mysqli database ressource.
 	 * @param filter the filter (might be null)
 	 * @param rangeStart (>=0 : skip the $rangeStart first records)
 	 * @param rangeLength ($rangeStart >= 0 && $rangeLength > 0 : return only $rangeLength records)
 	 * @return an array of Db]]><xsl:value-of select="@classname" /><![CDATA[Row
 	 */
-	function getList($filter = null, $rangeStart = -1, $rangeLength = 0)
+	function getList($dataSource, $filter = null, $rangeStart = -1, $rangeLength = 0)
 	{
 		//Sanity check
 		if ($rangeStart >= 0 && $rangeLength <= 0)
@@ -166,7 +167,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$sql = '' ;
 		if (is_null($filter)) //default selector
 		{
-			return $this->getList($this->myDefaultFilter, $rangeStart, $rangeLength) ;
+			return $this->getList($dataSource, $this->myDefaultFilter, $rangeStart, $rangeLength) ;
 		}
 		]]><xsl:apply-templates select="sql/selectors" mode="buildSelectors">
 			<xsl:with-param name="filter_name" select="'filter'"/>
@@ -178,10 +179,10 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 
 		$this->myLastRequest = $sql ;
-		$db_result = mysqli_query($sql) ;
+		$db_result = $dataSource->query($sql) ;
 		$row_counter = 0 ;
 		
-		while ($next_record = @mysqli_fetch_array($db_result))
+		while ($next_record = $db_result->fetch_assoc())
 		{
 			if ($rangeStart >= 0 && $row_counter < $rangeStart)
 			{
@@ -206,10 +207,11 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	}
 	
 	/**Insert a row from a Db]]><xsl:value-of select="@classname" /><![CDATA[Row.
+	 * @param datasource the mysqli database ressource.
 	 * @param row the Db]]><xsl:value-of select="@classname" /><![CDATA[Row
 	 * @return -1 if the query failed
 	 */
-	function insert($row)
+	function insert($dataSource, $row)
 	{
 		$sql = '' ;
 		
@@ -226,15 +228,16 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$sql = $this->buildInsertQuery($this->myTable, $columnList, $valueList) ;
 
 		$this->myLastRequest = $sql ;
-		mysqli_query($sql);
-		return mysqli_affected_rows() ;
+		$db_result = $dataSource->query($sql);
+		return $db_result->affected_rows ;
 	}
 	
 	/**Update a row from a Db]]><xsl:value-of select="@classname" /><![CDATA[Row.
+	 * @param datasource the mysqli database ressource.
 	 * @param row the Db]]><xsl:value-of select="@classname" /><![CDATA[Row
 	 * @return -1 if the query failed
 	 */
-	function update($row)
+	function update($dataSource, $row)
 	{
 		$sql = '' ;
 		
@@ -254,23 +257,24 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
 
 		$this->myLastRequest = $sql ;
-		mysqli_query($sql);
-		return mysqli_affected_rows() ;
+		$db_result = $dataSource->query($sql);
+		return $db_result->affected_rows ;
 	}
 	
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row) or a Db]]><xsl:value-of select="@classname" /><![CDATA[Filter.
+	 * @param datasource the mysqli database ressource.
 	 * @param filter the Db]]><xsl:value-of select="@classname" /><![CDATA[Row or Db]]><xsl:value-of select="@classname" /><![CDATA[Filter
 	 * @return -1 if the query failed
 	 */
-	function delete($filter)
+	function delete($dataSource, $filter)
 	{
 		if (is_a($filter, 'Db]]><xsl:value-of select="@classname" /><![CDATA[Filter'))
 		{
-			return $this->deleteUsingFilter($filter) ;
+			return $this->deleteUsingFilter($dataSource, $filter) ;
 		}
 		else if (is_a($filter, 'Db]]><xsl:value-of select="@classname" /><![CDATA[Row'))
 		{
-			return $this->deleteUsingRow($filter) ;
+			return $this->deleteUsingRow($dataSource, $filter) ;
 		}
 		else
 		{
@@ -278,7 +282,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 	}
 
-	function deleteUsingFilter($filter)
+	function deleteUsingFilter($dataSource, $filter)
 	{
 		//TODO : Build the sql request using either a filter, either a row
 		$sql = null ;
@@ -297,15 +301,16 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 		
 		$this->myLastRequest = $sql ;
-		mysqli_query($sql) ;
-		return mysqli_affected_rows() ;
+		$db_result = $dataSource->query($sql);
+		return $db_result->affected_rows ;
 	}
 
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row).
+	 * @param datasource the mysqli database ressource.
 	 * @param filter the Db]]><xsl:value-of select="@classname" /><![CDATA[Row
 	 * @return -1 if the query failed
 	 */
-	function deleteUsingRow($filter)
+	function deleteUsingRow($dataSource, $filter)
 	{
 		$sql = null ;
 		
@@ -323,8 +328,8 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		}
 		
 		$this->myLastRequest = $sql ;
-		mysqli_query($sql) ;
-		return mysqli_affected_rows() ;
+		$db_result = $dataSource->query($sql);
+		return $db_result->affected_rows ;
 	}
 	
 	//========================================
