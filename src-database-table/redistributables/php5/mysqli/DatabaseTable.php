@@ -112,8 +112,9 @@ class DatabaseTable
 	 */
 	function buildUpdateQuery($tableName, $columnList, $valueList, $whereList, $whereOperator)
 	{
-		$sql = 'UPDATE '.$tableName.' SET ' ;
+		$sql = 'UPDATE '.$tableName ;
 		$sql .= DatabaseTable::buildUpdateSetClause($columnList, $valueList) ;
+		$sql .= ' WHERE ' ;
 		$sql .= DatabaseTable::buildConditionGroupClause($whereList, $whereOperator) ;
 		return $sql ;
 	}
