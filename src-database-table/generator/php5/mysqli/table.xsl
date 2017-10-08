@@ -252,7 +252,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		</xsl:apply-templates><![CDATA[
 
 		$whereList = array() ;
-		$whereList[] = $this->buildCondition($dataSource, $this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
+		$whereList[] = $this->buildCondition($dataSource, $this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $row->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
 
 		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
 
