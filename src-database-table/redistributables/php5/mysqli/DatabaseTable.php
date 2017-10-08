@@ -30,7 +30,7 @@ class DatabaseTable
 {
 	//constants
 	const PATTERN_DATETIME = '/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/' ;
-	
+
 	const OPERATOR_EQUAL = 'eq' ;
 	const OPERATOR_NOT_EQUAL = 'neq' ;
 	const OPERATOR_GREATER_OR_EQUAL = 'ge' ;
@@ -45,7 +45,7 @@ class DatabaseTable
 	const OPERATOR_NOT_IN = 'nin' ;
 	const OPERATOR_LIKE = 'like' ;
 	const OPERATOR_NOT_LIKE = 'nlike' ;
-	
+
 	const TYPE_INTEGER = 'integer' ;
 	const TYPE_UNSIGNED_INTEGER = 'unsignedInteger' ;
 	const TYPE_CHAR = 'char' ;
@@ -53,13 +53,13 @@ class DatabaseTable
 	const TYPE_TEXT = 'text' ;
 	const TYPE_DATETIME = 'datetime' ;
 	const TYPE_DATE = 'date' ;
-	
+
 	//stores the table name
 	var $myTable ;
-	
+
 	//map of the column names
 	var $myModel ;
-	
+
 	/**Build a INSERT query.
 	 *No sanity checks is performed .
 	 *static.
@@ -74,7 +74,7 @@ class DatabaseTable
 		$sql .= DatabaseTable::buildInsertValuesClause($columnList, $valueList) ;
 		return $sql ;
 	}
-	
+
 	/**Add columns list and VALUES clause.
 	 *No sanity checks is performed .
 	 *static.
@@ -99,7 +99,7 @@ class DatabaseTable
 		$sql = '('.$sqlCol.') VALUES('.$sqlVal.')' ;
 		return $sql ;
 	}
-	
+
 	/**Build a UPDATE query.
 	 *No sanity checks is performed .
 	 *static.
@@ -117,7 +117,7 @@ class DatabaseTable
 		$sql .= DatabaseTable::buildConditionGroupClause($whereList, $whereOperator) ;
 		return $sql ;
 	}
-	
+
 	/**Build a SET clause.
 	 *No sanity checks is performed .
 	 *static.
@@ -139,7 +139,7 @@ class DatabaseTable
 		$sql = ' SET '.$sql.' ' ;
 		return $sql ;
 	}
-	
+
 	/**Build a DELETE query.
 	 *No sanity checks is performed .
 	 *static.
@@ -154,7 +154,7 @@ class DatabaseTable
 		$sql .= DatabaseTable::buildConditionGroupClause($whereList, $whereOperator) ;
 		return $sql ;
 	}
-	
+
 	/**Build a SELECT query.
 	 *No sanity checks is performed .
 	 *static.
@@ -173,7 +173,7 @@ class DatabaseTable
 		$sql = 'SELECT ';
 		foreach ($columnList as $key=>$value)
 		{
-			if (0 != (integer)$key) 
+			if (0 != (integer)$key)
 			{
 				$sql .= ',' ;
 			}
@@ -187,7 +187,7 @@ class DatabaseTable
 		$sql .= DatabaseTable::buildGroupByClause($groupList) ;
 		return $sql ;
 	}
-	
+
 	/**Build an column list query part.
 	 *The query starts with a space.
 	 *No sanity checks is performed .
@@ -202,7 +202,7 @@ class DatabaseTable
 			$sql = ' ';
 			foreach ($columnList as $key=>$value)
 			{
-				if (0 != (integer)$key) 
+				if (0 != (integer)$key)
 				{
 					$sql .= ',' ;
 				}
@@ -212,7 +212,7 @@ class DatabaseTable
 		}
 		return '' ;
 	}
-	
+
 	/**Build an ORDER BY query part.
 	 *The query starts with a space.
 	 *No sanity checks is performed .
@@ -227,7 +227,7 @@ class DatabaseTable
 			$sql = ' ORDER BY ';
 			foreach ($orderList as $key=>$value)
 			{
-				if (0 != (integer)$key) 
+				if (0 != (integer)$key)
 				{
 					$sql .= ',' ;
 				}
@@ -237,7 +237,7 @@ class DatabaseTable
 		}
 		return '' ;
 	}
-	
+
 	/**Build an GROUP BY query part.
 	 *The query starts with a space.
 	 *No sanity checks is performed .
@@ -252,7 +252,7 @@ class DatabaseTable
 			$sql = ' GROUP BY ';
 			foreach ($groupList as $key=>$value)
 			{
-				if (0 != (integer)$key) 
+				if (0 != (integer)$key)
 				{
 					$sql .= ',' ;
 				}
@@ -262,7 +262,7 @@ class DatabaseTable
 		}
 		return '' ;
 	}
-	
+
 	/**Build a group of condition for WHERE clause.
 	 *This purpose is building a group of conditions.
 	 *The query starts with a space.
@@ -279,7 +279,7 @@ class DatabaseTable
 			$sql = ' (';
 			foreach ($whereList as $key=>$value)
 			{
-				if (0 != (integer)$key) 
+				if (0 != (integer)$key)
 				{
 					$sql .= ' '.$whereOperator.' ' ;
 				}
@@ -290,7 +290,7 @@ class DatabaseTable
 		}
 		return '' ;
 	}
-	
+
 	/**Converts a list of logical column names into real column names.
 	 *No sanity checks is performed .
 	 *static.
@@ -307,11 +307,12 @@ class DatabaseTable
 		}
 		return $return_list ;
 	}
-	
+
 	/**Build a condition.
 	 *This condition will be used by buildConditionGroup
 	 *No sanity checks is performed .
 	 *static.
+	 *@param datasource mysqli object.
 	 *@param colName name of the column.
 	 *@param colValue value of the column.
 	 *@param operator conditional operator (eq, neq, gt, ngt, ...,in, like).
@@ -319,9 +320,9 @@ class DatabaseTable
 	 *@return a sql query part as a string (empty if operator and type are incorrects)
 	 */
 	//TODO: deals date type values
-	function buildCondition($colName,$colValue,$operator='eq',$colType='string')
+	function buildCondition($datasource,$colName,$colValue,$operator='eq',$colType='string')
 	{
-		$encodedValue = $this->encodeValue($colValue, $colType) ;
+		$encodedValue = $this->encodeValue($colValue, $colType, $datasource) ;
 		return DatabaseTable::buildExpression($colName, $encodedValue, $operator) ;
 	}
 
@@ -330,9 +331,10 @@ class DatabaseTable
 	 *static.
 	 *@param value value of the column.
 	 *@param type type of the value (string,number,datetime).
-	 *@return a sql query part as a string (empty if operator and type are incorrects)
-	 */	
-	function encodeValue($value, $type)
+	 *@param datasource mysqli object.
+	 *@return the encoded value (empty string if operator and type are incorrects)
+	 */
+	function encodeValue($value, $type, $datasource)
 	{
 		$encodedValue = '' ;
 		if ($type == DatabaseTable::TYPE_INTEGER)
@@ -343,32 +345,28 @@ class DatabaseTable
 		{
 			$encodedValue = (integer)$value ;
 		}
-		else if ($type == DatabaseTable::TYPE_STRING)
+		else if (!is_null($value) && $type == DatabaseTable::TYPE_STRING)
 		{
-			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.$datasource->real_escape_string($value).'\'' ;
 		}
-		else if ($type == DatabaseTable::TYPE_CHAR)
+		else if (!is_null($value) && $type == DatabaseTable::TYPE_CHAR)
 		{
-			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.$datasource->real_escape_string($value).'\'' ;
 		}
-		else if ($type == DatabaseTable::TYPE_TEXT)
+		else if (!is_null($value) && $type == DatabaseTable::TYPE_TEXT)
 		{
-			$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
+			$encodedValue = '\''.$datasource->real_escape_string($value).'\'' ;
 		}
-		else if ($type == DatabaseTable::TYPE_DATETIME)
+		else if (!is_null($value) && $type == DatabaseTable::TYPE_DATETIME)
 		{
 			if (preg_match($this->DbTable->PATTERN_DATETIME, $value, $matches))
 			{
 				$encodedValue = '\''.$matches[1].'-'.$matches[2].'-'.$matches[3].' '.$matches[4].':'.$matches[5].':'.$matches[6].'\'' ;
 			}
-			else
-			{
-				$encodedValue = '\''.mysqli_real_escape_string($value).'\'' ;
-			}
 		}
 		return $encodedValue ;
 	}
-	
+
 	/**Build an expression A op B.
 	 *The resulting expression is not put inside parenthesis.
 	 *For the operator DatabaseTable::OPERATOR_IN, the second member is put inside parenthesis.
@@ -443,8 +441,8 @@ class DatabaseTable
 			return ' not ' ;
 		}
 	}
-	
-	
+
+
 	/**Build a LIMIT clause.
 	 *@param count limit value.
 	 *@param offset offset value.
@@ -463,9 +461,9 @@ class DatabaseTable
 			$sqlOffset = ($intoffset > 0)?'OFFSET '.$intoffset.' ':'' ;
 			$sql=$sqlLimit.$sqlOffset ;
 		}
-		
+
 		return $sql ;
 	}
-	
+
 }
 ?>

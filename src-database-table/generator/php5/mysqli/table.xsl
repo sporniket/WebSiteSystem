@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- 
+<!--
 (c)2006 David Sporn
 
 This library is free software; you can redistribute it and/or
@@ -20,13 +20,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 <xsl:output method="text" encoding="iso-8859-15"/>
 <!--(c)2005 David Sporn-->
 <!-- == == == == == == == == == Main part == == == == == == == == == -->
-	<xsl:template match="table"><![CDATA[<?php 
+	<xsl:template match="table"><![CDATA[<?php
 /****** GENERATED CODE - DO NOT EDIT ******/
 require_once('lib/DatabaseTable.php') ;
 
 /*]]><xsl:value-of select="description"/><![CDATA[
  *
- * This Componant contains the following entities : 
+ * This Componant contains the following entities :
  *     Db]]><xsl:value-of select="@classname" /><![CDATA[Filter
  *     Db]]><xsl:value-of select="@classname" /><![CDATA[Row
  *     Db]]><xsl:value-of select="@classname" /><![CDATA[Table
@@ -64,10 +64,10 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	function Db]]><xsl:value-of select="@classname"/><![CDATA[Row()
 	{]]><xsl:apply-templates select="model/property" mode="FieldInitializer"/><![CDATA[
 	}
-		
+
 	//========================================
 	//Accessors]]><xsl:apply-templates select="model/property" mode="Accessor"/><![CDATA[
-	
+
 	//=== Sid =================================
 	function get]]><xsl:value-of select="model/@sidName"/><![CDATA[()
 	{
@@ -92,7 +92,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	<xsl:template match="table" mode="Filter"><![CDATA[
 	//========================================
 	//Constants]]><xsl:apply-templates select="filter/enum" mode="DeclareValues"/><![CDATA[
-	
+
 	//========================================
 	//Constructor
 	function Db]]><xsl:value-of select="@classname"/><![CDATA[Filter()
@@ -102,14 +102,14 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		<xsl:with-param name="checkEnum" select="1"/>
 	</xsl:apply-templates><![CDATA[
 	}
-		
+
 	//========================================
 	//Accessors]]><xsl:apply-templates select="filter/enum" mode="Accessor"/>
 	<xsl:apply-templates select="filter/property" mode="Accessor"/>
 	<xsl:apply-templates select="model/property[@type='char' or @type='unsignedInteger' or @type='']" mode="Accessor">
 		<xsl:with-param name="checkEnum" select="1"/>
 	</xsl:apply-templates><![CDATA[
-	
+
 	//=== Sid =================================
 	function get]]><xsl:value-of select="model/@sidName"/><![CDATA[()
 	{
@@ -145,7 +145,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		]]><xsl:apply-templates select="model/property" mode="InitModel"/><![CDATA[
 		$this->myDefaultFilter = new Db]]><xsl:value-of select="@classname"/><![CDATA[Filter() ;
 	}
-	
+
 	//========================================
 	//Operations
 	/**Select rows from the table according to a filter.
@@ -181,7 +181,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		$this->myLastRequest = $sql ;
 		$db_result = $dataSource->query($sql) ;
 		$row_counter = 0 ;
-		
+
 		while ($next_record = $db_result->fetch_assoc())
 		{
 			if ($rangeStart >= 0 && $row_counter < $rangeStart)
@@ -194,18 +194,18 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 				break ; //range ends
 			}
 			$new_row = new Db]]><xsl:value-of select="@classname" /><![CDATA[Row ;
-			
+
 			//[fill the row]
 			$new_row->setSid((integer)($next_record[$this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA[']])) ;
 			]]><xsl:apply-templates select="model/property" mode="fillRow"/><![CDATA[
-			
+
 			array_push($list_retour, $new_row) ;
 			$row_counter++ ;
 		}
 
 		return $list_retour ;
 	}
-	
+
 	/**Insert a row from a Db]]><xsl:value-of select="@classname" /><![CDATA[Row.
 	 * @param datasource the mysqli database ressource.
 	 * @param row the Db]]><xsl:value-of select="@classname" /><![CDATA[Row
@@ -214,24 +214,24 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	function insert($dataSource, $row)
 	{
 		$sql = '' ;
-		
+
 		//SQL
 		$columnList = array() ;]]><xsl:apply-templates select="model" mode="buildColumnList">
 			<xsl:with-param name="variable_name" select="'columnList'"/>
 		</xsl:apply-templates><![CDATA[
-		
+
 		$valueList = array() ;]]><xsl:apply-templates select="model" mode="buildValueList">
 			<xsl:with-param name="variable_name" select="'valueList'"/>
 			<xsl:with-param name="source_name" select="'row'"/>
 		</xsl:apply-templates><![CDATA[
-		
+
 		$sql = $this->buildInsertQuery($this->myTable, $columnList, $valueList) ;
 
 		$this->myLastRequest = $sql ;
 		$db_result = $dataSource->query($sql);
-		return $db_result->affected_rows ;
+		return $dataSource->affected_rows ;
 	}
-	
+
 	/**Update a row from a Db]]><xsl:value-of select="@classname" /><![CDATA[Row.
 	 * @param datasource the mysqli database ressource.
 	 * @param row the Db]]><xsl:value-of select="@classname" /><![CDATA[Row
@@ -240,27 +240,27 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	function update($dataSource, $row)
 	{
 		$sql = '' ;
-		
+
 		//SQL
 		$columnList = array() ;]]><xsl:apply-templates select="model" mode="buildColumnList">
 			<xsl:with-param name="variable_name" select="'columnList'"/>
 		</xsl:apply-templates><![CDATA[
-		
+
 		$valueList = array() ;]]><xsl:apply-templates select="model" mode="buildValueList">
 			<xsl:with-param name="variable_name" select="'valueList'"/>
 			<xsl:with-param name="source_name" select="'row'"/>
 		</xsl:apply-templates><![CDATA[
 
 		$whereList = array() ;
-		$whereList[] = $this->buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
-		
+		$whereList[] = $this->buildCondition($dataSource, $this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
+
 		$sql = $this->buildUpdateQuery($this->myTable, $columnList, $valueList, $whereList, 'and') ;
 
 		$this->myLastRequest = $sql ;
 		$db_result = $dataSource->query($sql);
-		return $db_result->affected_rows ;
+		return $dataSource->affected_rows ;
 	}
-	
+
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row) or a Db]]><xsl:value-of select="@classname" /><![CDATA[Filter.
 	 * @param datasource the mysqli database ressource.
 	 * @param filter the Db]]><xsl:value-of select="@classname" /><![CDATA[Row or Db]]><xsl:value-of select="@classname" /><![CDATA[Filter
@@ -286,7 +286,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	{
 		//TODO : Build the sql request using either a filter, either a row
 		$sql = null ;
-		
+
 		if (is_null($filter))
 		{
 			return -1 ;
@@ -299,10 +299,10 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		{
 			return -1 ;
 		}
-		
+
 		$this->myLastRequest = $sql ;
 		$db_result = $dataSource->query($sql);
-		return $db_result->affected_rows ;
+		return $dataSource->affected_rows ;
 	}
 
 	/**Delete using Db]]><xsl:value-of select="@classname" /><![CDATA[Row (delete a row).
@@ -313,25 +313,25 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	function deleteUsingRow($dataSource, $filter)
 	{
 		$sql = null ;
-		
+
 		if (is_null($filter))
 		{
 			//build the sql request with a row
 			//$sql = 'delete from '.$this->myTable.' where '.$this->myModel['sid'].' = '.(integer)$filter->getSid() ;
 			$whereList = array() ;
-			$whereList[] = $this->buildCondition($this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
+			$whereList[] = $this->buildCondition($dataSource, $this->myModel[']]><xsl:value-of select="model/@sidColumn"/><![CDATA['], $filter->get]]><xsl:value-of select="model/@sidName"/><![CDATA[(), 'eq', ']]><xsl:value-of select="model/@sidType"/><![CDATA[') ;
 			$sql = $this->buildDeleteQuery($this->myTable, $whereList, 'and') ;
 		}
 		else
 		{
 			return -1 ;
 		}
-		
+
 		$this->myLastRequest = $sql ;
 		$db_result = $dataSource->query($sql);
-		return $db_result->affected_rows ;
+		return $dataSource->affected_rows ;
 	}
-	
+
 	//========================================
 	//Fields
 	var $myTable ;
@@ -343,7 +343,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	{
 		return $this->myLastRequest ;
 	}
-	
+
 ]]>
 	</xsl:template>
 
@@ -354,7 +354,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 		<xsl:param name="checkEnum" select="0"/>
 		<xsl:variable name="ref_name" select="@name"/>
 		<xsl:if test="$checkEnum=0 or count(../../filter/enum[@name=$ref_name])=0"><![CDATA[
-	
+
 	//============= ]]><xsl:value-of select="@name"/><![CDATA[ =============
 	/*==================*]]><xsl:value-of select="description"/><![CDATA[
 	 *==================*/
@@ -430,7 +430,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 
 
 	<xsl:template match="enum" mode="Accessor"><![CDATA[
-	
+
 	//=== ]]><xsl:value-of select="@name"/><![CDATA[ ===
 	/*==================*]]><xsl:value-of select="description"/><![CDATA[
 	 *==================*/
@@ -467,7 +467,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 	<xsl:template match="model" mode="buildValueList">
 		<xsl:param name="variable_name"/>
 		<xsl:param name="source_name"/><xsl:for-each select="property"><![CDATA[
-		$]]><xsl:value-of select="concat($variable_name, '[] = $this->encodeValue($', $source_name,'->get', @name, '(), &quot;', @type,'&quot;) ;')"/><![CDATA[]]></xsl:for-each></xsl:template>
+		$]]><xsl:value-of select="concat($variable_name, '[] = $this->encodeValue($', $source_name,'->get', @name, '(), &quot;', @type,'&quot;, $dataSource) ;')"/><![CDATA[]]></xsl:for-each></xsl:template>
 
 
 
@@ -635,7 +635,7 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 						<xsl:with-param name="variable_name" select="concat($variable_name,'_',position())"/>
 						<xsl:with-param name="filter_name" select="$filter_name"/>
 					</xsl:apply-templates><![CDATA[
-			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildConditionGroupClause ($',$variable_name,'_',position(),', &quot;', @operator,'&quot;) ;')"/><![CDATA[
+			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildConditionGroupClause ($dataSource, $',$variable_name,'_',position(),', &quot;', @operator,'&quot;) ;')"/><![CDATA[
 ]]></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="." mode="buildWhereConditions">
@@ -660,6 +660,6 @@ class Db]]><xsl:value-of select="@classname"/><![CDATA[Table extends DatabaseTab
 			<xsl:when test="@columnName=$model_sid"><xsl:value-of select="$model/@sidType"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="$model/property[@column=$column_name]/@type"/></xsl:otherwise>
 		</xsl:choose></xsl:variable><![CDATA[
-			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildCondition($this->myModel[&quot;', @columnName, '&quot;], $',$filter_name,'->get',@filterName,'(), &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
+			$]]><xsl:value-of select="concat($variable_name,'[] = $this->buildCondition($dataSource, $this->myModel[&quot;', @columnName, '&quot;], $',$filter_name,'->get',@filterName,'(), &quot;', @operator,'&quot;, &quot;', $type_column, '&quot;) ;')"/><![CDATA[
 ]]></xsl:template>
 </xsl:stylesheet>
